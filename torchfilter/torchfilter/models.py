@@ -35,7 +35,6 @@ class _Model(nn.Module, _Abstract):
         self.device = safe_cast(torch.device, device)
         self.to(self.device)
 
-
 class LinearStateSpaceModel(_Model):
     def __init__(self,
         initial_condition=None, device='cpu', **kwargs):
@@ -43,6 +42,8 @@ class LinearStateSpaceModel(_Model):
         super(LinearStateSpaceModel, self).__init__(device)
 
         F, Q, H, R = _parse_dynamics(kwargs)
+
+        if _x0 is
 
         self._kf = KalmanFilter(F, H, Q, R, device)
         self._rts = RauchTungStriebelSmoother.from_filter(self._kf)
@@ -62,3 +63,6 @@ class LinearStateSpaceModel(_Model):
     def predict(self, t):
         ''' '''
         NotImplemented
+
+class StateSpacegaussianProcess(LinearStateSpaceModel):
+    def __init__(self, kernel=)
