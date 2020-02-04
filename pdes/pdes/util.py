@@ -71,9 +71,22 @@ def radial_avg(X, dx, calculate_q = True, device='cpu'):
             device=device
         )
         q = torch.bincount(r.view(-1), qr.view(-1)) / torch.bincount(r.view(-1))
+    #
+    # S = torch.stack(
+    #     [torch.bincount(r.view(-1),X[i,...].view(-1))/torch.bincount(r.view(-1)) for i in range(X.shape[0])],
+    #     0
+    # )
+    # print(S.shape)
+    # Sbc = S
+    S_ = []
+    for i in torch.unique(r.view(-1)):
+        xj = xi[torch.where(r == i)]
+        yj = yi[torch.where(r == i)]
+        S_.append(X[..., xj, yj].mean(-1).view(-1,1))
+        #ind.append((xi,yj))
+    S = torch.cat(S_, -1)
+    # print(S.shape)
+    #
+    # print((Sbc - S).abs().max())
 
-    S = torch.stack(
-        [torch.bincount(r.view(-1),X[i,...].view(-1))/torch.bincount(r.view(-1)) for i in range(X.shape[0])],
-        0
-    )
     return (q[1:],S[...,1:]) if calculate_q else S[...,1:]
